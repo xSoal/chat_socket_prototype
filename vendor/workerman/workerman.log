@@ -1,0 +1,22 @@
+2022-03-02 10:31:40 pid:1 Error: Cannot use object of type Workerman\Connection\TcpConnection as array in D:\open-server\OSPanel\domains\phpsocket\socket.php:80
+Stack trace:
+#0 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Connection\TcpConnection.php(638): {closure}(Object(Workerman\Connection\TcpConnection), '{"action":"send...')
+#1 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Events\Select.php(295): Workerman\Connection\TcpConnection->baseRead(Resource id #28)
+#2 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(2431): Workerman\Events\Select->loop()
+#3 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(1430): Workerman\Worker->run()
+#4 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(1373): Workerman\Worker::forkWorkersForWindows()
+#5 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(549): Workerman\Worker::forkWorkers()
+#6 D:\open-server\OSPanel\domains\phpsocket\socket.php(102): Workerman\Worker::runAll()
+#7 {main}
+2022-03-02 10:54:39 pid:1 Exception: You can't send(array) to client, you need to convert it to a string.  in D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Protocols\Websocket.php:230
+Stack trace:
+#0 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Connection\TcpConnection.php(321): Workerman\Protocols\Websocket::encode(Array, Object(Workerman\Connection\TcpConnection))
+#1 D:\open-server\OSPanel\domains\phpsocket\socket.php(94): Workerman\Connection\TcpConnection->send(Array)
+#2 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Connection\TcpConnection.php(638): {closure}(Object(Workerman\Connection\TcpConnection), '{"action":"send...')
+#3 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Events\Select.php(295): Workerman\Connection\TcpConnection->baseRead(Resource id #27)
+#4 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(2431): Workerman\Events\Select->loop()
+#5 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(1430): Workerman\Worker->run()
+#6 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(1373): Workerman\Worker::forkWorkersForWindows()
+#7 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(549): Workerman\Worker::forkWorkers()
+#8 D:\open-server\OSPanel\domains\phpsocket\socket.php(113): Workerman\Worker::runAll()
+#9 {main}
