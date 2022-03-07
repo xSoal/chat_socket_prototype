@@ -20,3 +20,13 @@ Stack trace:
 #7 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(549): Workerman\Worker::forkWorkers()
 #8 D:\open-server\OSPanel\domains\phpsocket\socket.php(113): Workerman\Worker::runAll()
 #9 {main}
+2022-03-07 11:22:26 pid:1 Error: Function name must be a string in D:\open-server\OSPanel\domains\phpsocket\socket.php:110
+Stack trace:
+#0 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Connection\TcpConnection.php(638): {closure}(Object(Workerman\Connection\TcpConnection), '{"action":"want...')
+#1 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Events\Select.php(295): Workerman\Connection\TcpConnection->baseRead(Resource id #26)
+#2 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(2431): Workerman\Events\Select->loop()
+#3 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(1430): Workerman\Worker->run()
+#4 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(1373): Workerman\Worker::forkWorkersForWindows()
+#5 D:\open-server\OSPanel\domains\phpsocket\vendor\workerman\workerman\Worker.php(549): Workerman\Worker::forkWorkers()
+#6 D:\open-server\OSPanel\domains\phpsocket\socket.php(118): Workerman\Worker::runAll()
+#7 {main}

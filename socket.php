@@ -4,7 +4,7 @@ date_default_timezone_set("Europe/Kiev");
 
 require_once './vendor/autoload.php';
 require_once 'functions.php';
-require_once 'bd.php';
+// require_once 'bd.php';
 
 
 use Workerman\Lib\Timer;
@@ -21,6 +21,7 @@ $worker->onConnect = function($connection)
         // $connection->id  уникальный id самого сокета
         $connections[$connection->id] = $connection;
         $connection->send(json_encode("ok"));
+
         var_dump(count($connections));
     };
 
@@ -37,9 +38,12 @@ $worker->onClose = function($connection) use(&$connections)
 
 
 $worker->onMessage = function($connection, $message) use (&$connections){
-    global $connections, $link;
-    $messageData = json_decode($message, true);
+    global $connections;
+    $link =  mysqli_connect("localhost", "root", "", "test_socket");
 
+    var_dump($message);
+    $messageData = json_decode($message, true);
+    
     $action = $messageData["action"];
 
     if($action === 'authorize'){
@@ -61,12 +65,13 @@ $worker->onMessage = function($connection, $message) use (&$connections){
 
             $new_token = generateRandomString(25);
             mysqli_query($link, "UPDATE `users` SET token = '$new_token' WHERE id = '$user_id'");
-        } else {
-            $connection->send(json_encode("errorAuthorize"));
-            unset($connections[$connection->id]);
         }
 
-        return;
+    }
+
+    if(!$connection->user_id){
+        $connection->send(json_encode("errorAuthorize"));
+        unset($connections[$connection->id]);
     }
 
 
@@ -93,13 +98,49 @@ $worker->onMessage = function($connection, $message) use (&$connections){
             "date_time" => $date_time
         ], JSON_UNESCAPED_UNICODE));
 
+        return;
+    }   
+
+    if($action === 'want_send_file'){
+        $connection->send(json_encode("server_wait_for_upload"));
+        $connection->server_wait_for_upload = $messageData["file_name"];
     }
 
+    if( isset($connection->server_wait_for_upload) && $connection->server_wait_for_upload ){
+        var_dump("WAITING FOR FILE TRANSFER");
+        
+        $file = $message;
+        
+        // $finfo = new finfo(FILEINFO_MIME_TYPE);
+        // $mimeType = $finfo->buffer($file);
 
-    
-    
+        
+        // if($mimeType === ""){
+        // }
+
+        if(probably_binary($file) && file_put_contents(__DIR__. "/files/" . $connection->server_wait_for_upload, $file)){
+            var_dump("FILE IS SAVE");
+            unset($connection->server_wait_for_upload);
+        }
+
+        
+
+    }
+
+    mysqli_close($link);
 };
 
+
+function probably_binary($stringa) {
+    $is_binary=false;
+    $stringa=str_ireplace("\t","",$stringa);
+    $stringa=str_ireplace("\n","",$stringa);
+    $stringa=str_ireplace("\r","",$stringa);
+    if(is_string($stringa) && ctype_print($stringa) === false){
+        $is_binary=true;
+    }
+    return $is_binary;
+}
 
 
 Worker::runAll();

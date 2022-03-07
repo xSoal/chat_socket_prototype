@@ -77,6 +77,8 @@
     });
 
     socket.onopen = function(){
+
+        
         socket.send(JSON.stringify({
             action: "authorize",
             user_id,
@@ -86,6 +88,7 @@
 
         socket.addEventListener('message', e => {
             const {action} = JSON.parse(e.data);
+            console.log(e.data)
             if(action === 'new_message'){
                 const newMessage = JSON.parse(e.data);
 
@@ -260,8 +263,11 @@
         },
         template: `
             <div class="messageInput__cont">
+                <div class="messageInput__file">
+                    <input type="file" @change="onFileChange">
+                </div>
                 <div class="messageInput__inputCont">
-                    <input v-model="currentMessage">
+                    <input v-model="currentMessage" @keyup.enter="sendMessageHandler">
                 </div>
                 <div class="messageInput__submitCont">
                     <button class="" @click="sendMessageHandler">send</button>
@@ -272,6 +278,37 @@
             sendMessageHandler(){
                 this.$emit('sendMessage', this.currentMessage);
                 this.currentMessage = ``;
+            },
+             onFileChange(e){
+
+                const file = e.target.files[0];
+
+                var reader = new FileReader();
+                var rawData = new ArrayBuffer();  
+
+                reader.onload =  function(e) {
+
+                    rawData = e.target.result;
+
+                    socket.send(JSON.stringify({
+                        action: "want_send_file",
+                        file_name: file.name
+                    }));
+
+                    socket.addEventListener("message", function(res){
+                        if(res.data && JSON.parse(res.data) === 'server_wait_for_upload'){
+                            alert("sending")
+                            socket.send(rawData);
+                        }
+                    });
+
+
+
+                }
+
+                reader.readAsArrayBuffer(file);                 
+
+
             }
         }
     });
